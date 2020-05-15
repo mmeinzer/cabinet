@@ -31,4 +31,11 @@ app.post('/samples', auth, (req, res) => {
   res.json({ auth: req.auth.user });
 });
 
-app.listen(3000);
+const port = process.env.PORT;
+if (!port) {
+  console.error(`No PORT specified`);
+  process.exit(1);
+}
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
+});
