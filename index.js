@@ -5,14 +5,16 @@ const basicAuth = require('express-basic-auth');
 
 const app = express();
 
-const { USER, PASSWORD } = process.env;
-if (!USER || !PASSWORD) {
-  console.error('Missing USER or PASSWORD environment variable(s)');
+const { USERNAME, PASSWORD } = process.env;
+if (!USERNAME || !PASSWORD) {
+  const missing = USERNAME ? 'PASSWORD' : 'USERNAME';
+
+  console.error(`Missing ${missing} environment variable`);
   process.exit(1);
 }
 
 const auth = basicAuth({
-  users: { [USER]: PASSWORD },
+  users: { [USERNAME]: PASSWORD },
 });
 
 app.get('/', (req, res) => {
