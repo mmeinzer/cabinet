@@ -2,8 +2,12 @@ require('dotenv').config();
 
 const express = require('express');
 const basicAuth = require('express-basic-auth');
+const expressReactViews = require('express-react-views');
 
 const app = express();
+
+app.set('view engine', 'jsx');
+app.engine('jsx', expressReactViews.createEngine());
 
 const { USERNAME, PASSWORD } = process.env;
 if (!USERNAME || !PASSWORD) {
@@ -18,7 +22,7 @@ const auth = basicAuth({
 });
 
 app.get('/', (req, res) => {
-  res.json({ answer: 'hello' });
+  res.render('index', { name: 'Matt', title: 'Cabin Internet Speed' });
 });
 
 app.post('/samples', auth, (req, res) => {
