@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const bodyParser = require('body-parser');
 const basicAuth = require('express-basic-auth');
 const expressReactViews = require('express-react-views');
 
@@ -16,10 +17,11 @@ if (!USERNAME || !PASSWORD) {
   console.error(`Missing ${missing} environment variable`);
   process.exit(1);
 }
-
 const auth = basicAuth({
   users: { [USERNAME]: PASSWORD },
 });
+
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.render('index', { name: 'Matt', title: 'Cabin Internet Speed' });
