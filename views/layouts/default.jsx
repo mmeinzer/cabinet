@@ -14,7 +14,7 @@ function DefaultLayout({ title, children }) {
 
 DefaultLayout.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.object,
 };
 
 module.exports = DefaultLayout;
