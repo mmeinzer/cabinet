@@ -7,6 +7,10 @@ const expressReactViews = require('express-react-views');
 
 const app = express();
 
+const state = {
+  samples: [],
+};
+
 app.set('view engine', 'jsx');
 app.engine('jsx', expressReactViews.createEngine());
 
@@ -24,11 +28,27 @@ const auth = basicAuth({
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.render('index', { name: 'Matt', title: 'Cabin Internet Speed' });
+  const { samples } = state;
+  const last = samples[samples.length - 1];
+
+  res.render('index', {
+    sample: last,
+    count: samples.length,
+  });
 });
 
 app.post('/samples', auth, (req, res) => {
-  res.json({ auth: req.auth.user });
+  const { ping, download, upload } = req.body;
+  if (!ping || !download || !upload) {
+    console.log('Missing info on request');
+
+    res.json({ message: 'Ok', err: null });
+    return;
+  }
+
+  state.samples.push({ ping, download, upload, time: Date.now() });
+
+  res.json({ message: 'Ok', err: null });
 });
 
 const port = process.env.PORT;

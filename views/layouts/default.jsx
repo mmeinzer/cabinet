@@ -1,11 +1,11 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 
-function DefaultLayout({ title, children }) {
+function DefaultLayout({ children }) {
   return (
     <html lang="en-US">
       <head>
-        <title>{title}</title>
+        <title>Cabin Internet Speed</title>
       </head>
       <body>{children}</body>
     </html>
@@ -13,8 +13,10 @@ function DefaultLayout({ title, children }) {
 }
 
 DefaultLayout.propTypes = {
-  title: PropTypes.string,
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
 };
 
 module.exports = DefaultLayout;
