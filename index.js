@@ -29,26 +29,25 @@ app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   const { samples } = state;
-  const last = samples[samples.length - 1];
 
   res.render('index', {
-    sample: last,
-    count: samples.length,
+    samples,
   });
 });
 
 app.post('/samples', auth, (req, res) => {
   const { ping, download, upload } = req.body;
+
   if (!ping || !download || !upload) {
     console.log('Missing info on request');
 
-    res.json({ message: 'Ok', err: null });
+    res.json({ message: 'ok', err: null });
     return;
   }
 
   state.samples.push({ ping, download, upload, time: Date.now() });
 
-  res.json({ message: 'Ok', err: null });
+  res.json({ message: 'ok', err: null });
 });
 
 const port = process.env.PORT;
