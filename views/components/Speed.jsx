@@ -2,6 +2,11 @@ const React = require('react');
 const PropTypes = require('prop-types');
 
 function Speed({ speed, unit = 'Mbps' }) {
+  if (typeof speed !== 'number' || typeof speed.toFixed !== 'function') {
+    console.log(speed);
+    return null;
+  }
+
   return (
     <div>
       <span>{speed.toFixed(2)}</span>{' '}
