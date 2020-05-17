@@ -2,8 +2,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 
 function Speed({ speed, unit = 'Mbps' }) {
-  if (typeof speed !== 'number' || typeof speed.toFixed !== 'function') {
-    console.log(speed);
+  if (typeof speed !== 'number') {
     return null;
   }
 

@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 app.post('/samples', auth, (req, res) => {
   const { ping, download, upload } = req.body;
 
-  if (!ping || !download || !upload) {
+  if (![ping, download, upload].every(numeric => typeof numeric === 'number')) {
     console.log('Missing info on request');
 
     res.json({ message: 'ok', err: null });
