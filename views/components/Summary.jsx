@@ -2,6 +2,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 
 const { formatDistanceToNowStrict } = require('date-fns');
+const Speed = require('./Speed');
 
 function Summary({ sample }) {
   return (
@@ -10,23 +11,17 @@ function Summary({ sample }) {
         {sample ? (
           <>
             <p className="text-2xl font-light text-gray-200">Internet Speed</p>
-            <p className="text-base text-gray-500 mb-3">{`${formatDistanceToNowStrict(
+            <p className="text-base text-gray-500">{`${formatDistanceToNowStrict(
               sample.time
             )} ago`}</p>
             <p className="text-center text-sm font-light mt-3 text-gray-500">
               Download
             </p>
-            <div>
-              <span>{sample.download}</span>{' '}
-              <span className="font-thin text-gray-500 text-xl">Mbps</span>
-            </div>
+            <Speed speed={sample.download} />
             <p className="text-center text-sm font-light mt-3 text-gray-500">
               Upload
             </p>
-            <div>
-              <span>{sample.upload}</span>{' '}
-              <span className="font-thin text-gray-500 text-xl">Mbps</span>
-            </div>
+            <Speed speed={sample.upload} />
             <p className="text-center text-xs font-light mt-2 text-gray-500">
               Ping
             </p>
