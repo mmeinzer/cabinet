@@ -18,12 +18,12 @@ function History({ samples }) {
   );
   const weeklyAverageDown =
     pastWeekSamples.reduce((sum, sample) => sum + sample.download, 0) /
-    samples.length;
+    pastWeekSamples.length;
 
   const pastDaySamples = samples.filter(({ time }) => isAfter(time, oneDayAgo));
   const dailyAverageDown =
     pastDaySamples.reduce((sum, sample) => sum + sample.download, 0) /
-    samples.length;
+    pastDaySamples.length;
 
   return (
     <>
@@ -35,11 +35,11 @@ function History({ samples }) {
             </p>
             <div className="mt-3">
               <p className="text-sm font-light text-gray-500">Daily</p>
-              <Speed speed={dailyAverageDown} />
+              {samples.length && <Speed speed={dailyAverageDown} />}
             </div>
             <div className="mt-3">
               <p className="text-sm font-light text-gray-500">Weekly</p>
-              <Speed speed={weeklyAverageDown} />
+              {samples.length && <Speed speed={weeklyAverageDown} />}
             </div>
           </div>
         </div>
