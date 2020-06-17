@@ -4,6 +4,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const basicAuth = require('express-basic-auth');
 const expressReactViews = require('express-react-views');
+const { Pool } = require('pg');
+
+const gracefulShutdown = require('./src/shutdown');
 
 const app = express();
 
@@ -13,6 +16,19 @@ const state = {
 
 app.set('view engine', 'jsx');
 app.engine('jsx', expressReactViews.createEngine());
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+pool.query('SELECT NOW() as now', err => {
+  if (err) {
+    console.error('error querying database on startup');
+    process.exit(1);
+  }
+
+  console.log('connected to database');
+});
 
 const { USERNAME, PASSWORD } = process.env;
 if (!USERNAME || !PASSWORD) {
@@ -27,7 +43,7 @@ const auth = basicAuth({
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   const { samples } = state;
 
   res.render('index', {
@@ -39,7 +55,7 @@ app.post('/samples', auth, (req, res) => {
   const { ping, download, upload } = req.body;
 
   if (![ping, download, upload].every(numeric => typeof numeric === 'number')) {
-    console.log('Missing info on request');
+    console.log('missing info on request');
 
     res.json({ message: 'ok', err: null });
     return;
@@ -52,9 +68,15 @@ app.post('/samples', auth, (req, res) => {
 
 const port = process.env.PORT;
 if (!port) {
-  console.error(`No PORT specified`);
+  console.error(`no PORT specified in environment`);
   process.exit(1);
 }
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+
+const server = app.listen(port, () => {
+  console.log(`server started on port ${port}`);
 });
+
+const shutdown = gracefulShutdown(server, pool);
+
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
