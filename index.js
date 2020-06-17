@@ -7,6 +7,7 @@ const expressReactViews = require('express-react-views');
 const { Pool } = require('pg');
 
 const gracefulShutdown = require('./src/shutdown');
+const { generateSamplesRepo } = require('./src/samplesRepo');
 
 const app = express();
 
@@ -21,14 +22,8 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-pool.query('SELECT NOW() as now', err => {
-  if (err) {
-    console.error('error querying database on startup');
-    process.exit(1);
-  }
-
-  console.log('connected to database');
-});
+const samplesRepo = generateSamplesRepo(pool);
+console.log('connected to database');
 
 const { USERNAME, PASSWORD } = process.env;
 if (!USERNAME || !PASSWORD) {
@@ -57,11 +52,12 @@ app.post('/samples', auth, (req, res) => {
   if (![ping, download, upload].every(numeric => typeof numeric === 'number')) {
     console.log('missing info on request');
 
-    res.json({ message: 'ok', err: null });
+    res.json({ message: 'ok', err: null }); // TODO: Send an error message
     return;
   }
 
   state.samples.push({ ping, download, upload, time: Date.now() });
+  samplesRepo.addOne({ ping, download, upload });
 
   res.json({ message: 'ok', err: null });
 });
