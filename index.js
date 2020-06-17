@@ -11,16 +11,22 @@ const { generateSamplesRepo } = require('./src/samplesRepo');
 
 const app = express();
 
-const state = {
-  samples: [],
-};
-
 app.set('view engine', 'jsx');
 app.engine('jsx', expressReactViews.createEngine());
 
-const pool = new Pool({
+let dbOpts = {
   connectionString: process.env.DATABASE_URL,
-});
+};
+if (process.env.NODE_ENV === 'production') {
+  console.log('using production db settings');
+  dbOpts = {
+    ...dbOpts,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  };
+}
+const pool = new Pool(dbOpts);
 
 const samplesRepo = generateSamplesRepo(pool);
 console.log('connected to database');
@@ -38,15 +44,15 @@ const auth = basicAuth({
 
 app.use(bodyParser.json());
 
-app.get('/', (_, res) => {
-  const { samples } = state;
+app.get('/', async (_, res) => {
+  const samples = await samplesRepo.getWeeklyData();
 
   res.render('index', {
     samples,
   });
 });
 
-app.post('/samples', auth, (req, res) => {
+app.post('/samples', auth, async (req, res) => {
   const { ping, download, upload } = req.body;
 
   if (![ping, download, upload].every(numeric => typeof numeric === 'number')) {
@@ -56,8 +62,7 @@ app.post('/samples', auth, (req, res) => {
     return;
   }
 
-  state.samples.push({ ping, download, upload, time: Date.now() });
-  samplesRepo.addOne({ ping, download, upload });
+  await samplesRepo.addOne({ ping, download, upload });
 
   res.json({ message: 'ok', err: null });
 });

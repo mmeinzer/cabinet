@@ -1,11 +1,19 @@
-function createAddSample(pool) {
+function createAddOne(pool) {
   const text =
     'INSERT INTO samples(ping, download, upload, added) VALUES ($1, $2, $3, $4) RETURNING *;';
 
   return function addSample({ ping, download, upload }) {
     const timestamp = new Date();
 
-    pool.query(text, [ping, download, upload, timestamp]);
+    return pool.query(text, [ping, download, upload, timestamp]);
+  };
+}
+
+function createGetWeeklyData(pool) {
+  const text = `SELECT ping, download, upload, added FROM samples WHERE added > now() - interval '1 week';`;
+
+  return function weeklyAverages() {
+    return pool.query(text).then(res => res.rows);
   };
 }
 
@@ -23,7 +31,7 @@ function initTable(pool) {
   return pool
     .query(text)
     .then(() => {
-      console.log('table created or exists');
+      console.log('"samples" table created or exists');
       return null;
     })
     .catch(err => {
@@ -39,7 +47,8 @@ function generateSamplesRepo(pool) {
   });
 
   return {
-    addOne: createAddSample(pool),
+    addOne: createAddOne(pool),
+    getWeeklyData: createGetWeeklyData(pool),
   };
 }
 

@@ -13,14 +13,16 @@ function History({ samples }) {
   const oneDayAgo = subOneDay(new Date());
   const sevenDaysAgo = subSevenDays(new Date());
 
-  const pastWeekSamples = samples.filter(({ time }) =>
-    isAfter(time, sevenDaysAgo)
+  const pastWeekSamples = samples.filter(({ added }) =>
+    isAfter(added, sevenDaysAgo)
   );
   const weeklyAverageDown =
     pastWeekSamples.reduce((sum, sample) => sum + sample.download, 0) /
     pastWeekSamples.length;
 
-  const pastDaySamples = samples.filter(({ time }) => isAfter(time, oneDayAgo));
+  const pastDaySamples = samples.filter(({ added }) =>
+    isAfter(added, oneDayAgo)
+  );
   const dailyAverageDown =
     pastDaySamples.reduce((sum, sample) => sum + sample.download, 0) /
     pastDaySamples.length;
