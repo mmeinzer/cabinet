@@ -28,8 +28,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 const pool = new Pool(dbOpts);
 
+console.log('attempting to connect database');
 const samplesRepo = generateSamplesRepo(pool);
-console.log('connected to database');
 
 const { USERNAME, PASSWORD } = process.env;
 if (!USERNAME || !PASSWORD) {
