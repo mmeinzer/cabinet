@@ -7,8 +7,6 @@ function Chart({ samples }) {
     .map(sample => `{x: ${getTime(sample.added)}, y: ${sample.download}}`)
     .join(',')}]`;
 
-  console.log(dataArrayString);
-
   return (
     <div className="mt-8 mx-4 flex justify-center">
       <div
@@ -24,9 +22,7 @@ function Chart({ samples }) {
 
             var options = {
               fullWidth: true,
-              lineSmooth: false,
-              low: 0,
-              showArea: true,
+              showLine: false,
               axisX: {
                 type: Chartist.AutoScaleAxis,
                 showGrid: false,
