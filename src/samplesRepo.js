@@ -2,7 +2,7 @@ function createAddOne(pool) {
   const text =
     'INSERT INTO samples(ping, download, upload, added) VALUES ($1, $2, $3, $4) RETURNING *;';
 
-  return function addSample({ ping, download, upload }) {
+  return function addOne({ ping, download, upload }) {
     const timestamp = new Date();
 
     return pool.query(text, [ping, download, upload, timestamp]);
@@ -12,7 +12,7 @@ function createAddOne(pool) {
 function createGetWeeklyData(pool) {
   const text = `SELECT ping, download, upload, added FROM samples WHERE added > now() - interval '1 week';`;
 
-  return function weeklyAverages() {
+  return function getWeeklyData() {
     return pool.query(text).then(res => res.rows);
   };
 }

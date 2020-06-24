@@ -6,26 +6,27 @@ const { isAfter } = require('date-fns');
 
 const Speed = require('./Speed');
 
-const subSevenDays = subDays(7);
 const subOneDay = subDays(1);
 
 function History({ samples }) {
   const oneDayAgo = subOneDay(new Date());
-  const sevenDaysAgo = subSevenDays(new Date());
 
-  const pastWeekSamples = samples.filter(({ added }) =>
-    isAfter(added, sevenDaysAgo)
-  );
-  const weeklyAverageDown =
-    pastWeekSamples.reduce((sum, sample) => sum + sample.download, 0) /
-    pastWeekSamples.length;
+  let weeklyAverageDown = 0;
+  if (samples.length > 0) {
+    weeklyAverageDown =
+      samples.reduce((sum, sample) => sum + sample.download, 0) /
+      samples.length;
+  }
 
   const pastDaySamples = samples.filter(({ added }) =>
     isAfter(added, oneDayAgo)
   );
-  const dailyAverageDown =
-    pastDaySamples.reduce((sum, sample) => sum + sample.download, 0) /
-    pastDaySamples.length;
+  let dailyAverageDown = 0;
+  if (pastDaySamples.length > 0) {
+    dailyAverageDown =
+      pastDaySamples.reduce((sum, sample) => sum + sample.download, 0) /
+      pastDaySamples.length;
+  }
 
   return (
     <>
@@ -37,11 +38,11 @@ function History({ samples }) {
             </p>
             <div className="mt-3">
               <p className="text-sm font-light text-gray-500">Daily</p>
-              {samples.length && <Speed speed={dailyAverageDown} />}
+              <Speed speed={dailyAverageDown} />
             </div>
             <div className="mt-3">
               <p className="text-sm font-light text-gray-500">Weekly</p>
-              {samples.length && <Speed speed={weeklyAverageDown} />}
+              <Speed speed={weeklyAverageDown} />
             </div>
           </div>
         </div>
