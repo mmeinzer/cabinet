@@ -21,11 +21,6 @@ function DefaultLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Roboto:wght@100;300;400;500;700&display=swap"
           rel="stylesheet"
         />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"
-        />
-        <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js" />
       </head>
       <body className="h-screen bg-gray-800 text-gray-200">{children}</body>
     </html>

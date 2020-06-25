@@ -9,8 +9,6 @@ const Speed = require('./Speed');
 const subOneDay = subDays(1);
 
 function History({ samples }) {
-  const oneDayAgo = subOneDay(new Date());
-
   let weeklyAverageDown = 0;
   if (samples.length > 0) {
     weeklyAverageDown =
@@ -18,6 +16,7 @@ function History({ samples }) {
       samples.length;
   }
 
+  const oneDayAgo = subOneDay(new Date());
   const pastDaySamples = samples.filter(({ added }) =>
     isAfter(added, oneDayAgo)
   );
